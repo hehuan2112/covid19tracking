@@ -606,7 +606,6 @@ if (isIE) {
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
 
 <script src="./static/lib/echarts/echarts.js"></script>
-<!-- <script src="./static/lib/topojson/topojson.min.js"></script> -->
 
 <!-- include other plots -->
 <script>
@@ -1393,7 +1392,7 @@ var fig_heatmap_uscntycdt = {
                     r.d_cdt.toFixed(1) +'</span>)<br>' +
                 'Total Cases:  <b>' + r.nccs[r.nccs.length-1].toFixed(0) + 
                     ' (' + this.get_sign(r.d_ncc) + r.d_ncc.toFixed(0) + ')</b><br>' + 
-                'Total Deaths:  <b>' + r.sdrs[r.sdrs.length-1].toFixed(0) + 
+                'Total Deaths:  <b>' + r.dths[r.dths.length-1].toFixed(0) + 
                     ' (' + this.get_sign(r.d_dth) + r.d_dth.toFixed(0) + ')</b><br>' +
                 'Death Rate:  <b>' + death_rate + '</b>';
 
@@ -3161,4 +3160,5 @@ $(document).ready(function () {
 })
 </script>
 </body>
+
 </html>

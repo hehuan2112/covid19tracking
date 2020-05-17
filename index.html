@@ -9,6 +9,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
+<link rel="icon" href="./static/img/favicon.ico">
 
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
@@ -3007,7 +3008,8 @@ var jarvis = {
             $.get('./covid_data/' + figmker_cdtmap.data_file, {ver: Math.random()}),
             $.get('./static/data/us-countymap-5m.json', {}),
             $.get('./covid_data/' + fig_caseline_states.data_file, {ver: Math.random()}),
-        ).done(function(data1, data2, data3) {
+            $.get('./covid_data/' + fig_heatmap_usstatecdt.data_file, {ver: Math.random()}),
+        ).done(function(data1, data2, data3, data4) {
             vue_rgpanels.init(data1[0], jarvis.regions);
             figmker_cdtmap.init(data1[0]);
             // init each region's figures
@@ -3043,9 +3045,9 @@ var jarvis = {
             fig_cdtline_cntys.add_series_by_FIPS('04013'); // Maricopa,AZ
 
             // draw the state plots
-            fig_heatmap_usstatecdt.init(data3[0]);
             fig_caseline_states.init(data3[0]);
             fig_testline_states.init(data3[0]);
+            fig_heatmap_usstatecdt.init(data4[0]);
             
             fig_caseline_states.add_series_by_state('MN');
             fig_testline_states.add_series_by_state('MN');
@@ -3054,20 +3056,6 @@ var jarvis = {
             jarvis.ssmsg('Dashboard is initialized.')
             setTimeout('jarvis.ssclose();', 500);
         });
-
-        // draw US state map and related plots
-        // $.get(
-        //     './covid_data/' + fig_heatmap_usstatecdt.data_file,
-        //     {ver: Math.random()},
-        //     function(data) {
-        //         fig_heatmap_usstatecdt.init(data);
-        //         fig_caseline_states.init(data);
-        //         fig_testline_states.init(data);
-                
-        //         fig_caseline_states.add_series_by_state('MN');
-        //         fig_testline_states.add_series_by_state('MN');
-        //     }, 'json'
-        // );
 
         // draw world map and related plots
         $.get(

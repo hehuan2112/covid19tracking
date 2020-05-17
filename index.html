@@ -659,6 +659,13 @@ var vue_rgpanels = {
                 get_color: function(v) {
                     if (v>=0) { return 'green'; }
                     else { return 'red'; }
+                },
+
+                reg2disp: function(reg) {
+                    if (reg == 'RST') {
+                        return 'RST/SEMN';
+                    }
+                    return reg;
                 }
             }
         });
@@ -716,6 +723,8 @@ var figmker_cdtmap = {
             fig.plot_dict.layout,
             {responsive: true}
         );
+        // update the last update
+        $('#' + plot_id + '_last_update').html(data.last_update);
         return fig;
     },
 
@@ -1310,6 +1319,8 @@ var fig_heatmap_uscntycdt = {
             {responsive: true}
         );
 
+        $('#' + this.plot_id + '_last_update').html(data.date);
+
         this.bind_click_event();
     },
 
@@ -1577,7 +1588,8 @@ var fig_heatmap_usstatecdt = {
         ],
     },
     data: null,
-    data_file: 'usstate-data-dict-latest.json',
+    // data_file: 'usstate-data-dict-latest.json',
+    data_file: 'usstate-data-latest.json',
     fmt_comma: d3.format(","),
 
     area: {
@@ -1595,38 +1607,6 @@ var fig_heatmap_usstatecdt = {
                 fig_heatmap_usstatecdt.init(data);
             }, 'json'
         );
-    },
-
-    get_width: function() {
-        var w = $('#' + this.plot_id).css('width');
-        w = parseFloat(w.substring(0, w.length-2));
-        console.log('* ' + this.plot_id + ' width: ' + w);
-        
-        var widths = [];
-        if (w < 100) {
-            // ask help !!!
-            // 40 is the padding of the container
-            w = jarvis.guess_width(this.plot_id) - 40;
-            if (w == 0) {
-                w = this.default_width;
-            }
-        }
-
-        return w;
-    },
-
-    get_height: function() {
-        var h = $('#' + this.plot_id).css('height');
-        h = parseFloat(h.substring(0, h.length-2));
-        console.log('* ' + this.plot_id + ' height: ' + h);
-
-        if (h < 200) {
-            var width = this.get_width();
-            return width * 0.6;
-        } else {
-            return h;
-        }
-
     },
 
     init: function(data) {
@@ -1675,6 +1655,8 @@ var fig_heatmap_usstatecdt = {
             this.plot_dict.layout,
             {responsive: true}
         );
+        // update the last update
+        $('#' + this.plot_id + '_last_update').html(data.date);
 
         this.bind_click_event();
     },
@@ -1699,13 +1681,18 @@ var fig_heatmap_usstatecdt = {
         for (const state in rows) {
             if (rows.hasOwnProperty(state)) {
                 const obj = rows[state];
+                var cdt = obj.cdts[obj.cdts.length - 1];
+                var ncc = obj.nccs[obj.nccs.length - 1];
+                var dth = obj.dths[obj.dths.length - 1];
+                var sdr = obj.dths[obj.dths.length - 1];
                 var r = {
                     state: state,
-                    val: obj[date].cdt,
+                    val: cdt,
                     txt: state + ' on ' + date + ' <br>' +
-                        'CDT: ' + obj[date].cdt.toFixed(1) + ' days <br>' +
-                        'Total Cases: ' + this.fmt_comma(obj[date].test_pos) + '<br>' + 
-                        'Total Death: ' + this.fmt_comma(obj[date].dth) + '<br>'
+                        'CDT: ' + cdt.toFixed(1) + ' days (' + obj.d_cdt.toFixed(1) +')<br>' +
+                        'Total Cases: ' + this.fmt_comma(ncc) + ' (' + obj.d_ncc.toFixed(0) + ')<br>' + 
+                        'Total Death: ' + this.fmt_comma(dth) + ' (' + obj.d_dth.toFixed(0) + ')<br>' + 
+                        'Death Rate: ' + this.fmt_comma(sdr) + '<br>'
                 };
                 mydata.regions.push(r);
             }
@@ -1718,7 +1705,41 @@ var fig_heatmap_usstatecdt = {
         return rows.map(function(row) {
             return row[key];
         });
-    }
+    },
+
+
+    get_width: function() {
+        var w = $('#' + this.plot_id).css('width');
+        w = parseFloat(w.substring(0, w.length-2));
+        console.log('* ' + this.plot_id + ' width: ' + w);
+        
+        var widths = [];
+        if (w < 100) {
+            // ask help !!!
+            // 40 is the padding of the container
+            w = jarvis.guess_width(this.plot_id) - 40;
+            if (w == 0) {
+                w = this.default_width;
+            }
+        }
+
+        return w;
+    },
+
+    get_height: function() {
+        var h = $('#' + this.plot_id).css('height');
+        h = parseFloat(h.substring(0, h.length-2));
+        console.log('* ' + this.plot_id + ' height: ' + h);
+
+        if (h < 200) {
+            var width = this.get_width();
+            return width * 0.6;
+        } else {
+            return h;
+        }
+
+    },
+
 };
 // bind this to the global plots object
 if (typeof(plots) == 'undefined') {
@@ -1840,6 +1861,9 @@ var fig_heatmap_worldcdt = {
             this.plot_dict.layout,
             {responsive: true}
         );
+        // update the last update
+        $('#' + this.plot_id + '_last_update').html(data.date);
+
         this.bind_click_event();
     },
     
@@ -2067,6 +2091,9 @@ var fig_casedeathline_cntys = {
 
         this.plot_chart = echarts.init(document.getElementById(this.plot_id));
         this.plot_chart.setOption(this.option);
+
+        // update the date
+        $('#' + this.plot_id + '_last_update').html(data.date);
     },
 
     resize: function() {
@@ -2208,6 +2235,9 @@ var fig_caseline_states = {
 
         this.plot_chart = echarts.init(document.getElementById(this.plot_id));
         this.plot_chart.setOption(this.option);
+        
+        // update the date
+        $('#' + this.plot_id + '_last_update').html(data.date);
     },
 
     resize: function() {
@@ -2379,6 +2409,9 @@ var fig_caseline_nations = {
 
         this.plot_chart = echarts.init(document.getElementById(this.plot_id));
         this.plot_chart.setOption(this.option);
+        
+        // update the date
+        $('#' + this.plot_id + '_last_update').html(data.date);
     },
 
     resize: function() {
@@ -2543,6 +2576,9 @@ var fig_cdtline_cntys = {
 
         this.plot_chart = echarts.init(document.getElementById(this.plot_id));
         this.plot_chart.setOption(this.option);
+        
+        // update the date
+        $('#' + this.plot_id + '_last_update').html(data.date);
     },
 
     resize: function() {
@@ -2699,6 +2735,9 @@ var fig_testline_states = {
 
         this.plot_chart = echarts.init(document.getElementById(this.plot_id));
         this.plot_chart.setOption(this.option);
+        
+        // update the date
+        $('#' + this.plot_id + '_last_update').html(data.date);
     },
 
     resize: function() {
@@ -2863,6 +2902,9 @@ var fig_deathline_nations = {
 
         this.plot_chart = echarts.init(document.getElementById(this.plot_id));
         this.plot_chart.setOption(this.option);
+        
+        // update the date
+        $('#' + this.plot_id + '_last_update').html(data.date);
     },
 
     resize: function() {

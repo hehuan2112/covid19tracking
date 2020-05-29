@@ -5,6 +5,9 @@ The visual components are developed based on ECharts and Plot.ly.
 
 The main page: https://hehuan2112.github.io/covid19tracking/
 
+The animated globe-level CDT map: https://hehuan2112.github.io/covid19tracking/cdtmap_world.html
+
 The animated state-level CDT map: https://hehuan2112.github.io/covid19tracking/cdtmap_state.html
 
 The animated county-level CDT map: https://hehuan2112.github.io/covid19tracking/cdtmap_county.html
+
